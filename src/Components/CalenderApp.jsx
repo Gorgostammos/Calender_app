@@ -37,7 +37,7 @@ const CalenderApp = () => {
           <span>14</span>
           <span>15</span>
           <span>16</span>
-          <span>17</span>
+          <span className="current-day">17</span>
           <span>18</span>
           <span>19</span>
           <span>20</span>
@@ -81,8 +81,8 @@ const CalenderApp = () => {
           </button>
         </div>
         <div className="event">
-          <div className="event-data-wrapper">
-            <div className="event-data">may 15, 2024</div>
+          <div className="event-date-wrapper">
+            <div className="event-date">may 15, 2024</div>
             <div className="event-time">10:00</div>
           </div>
           <div className="event-text">Meeting eith john</div>
@@ -95,5 +95,5 @@ const CalenderApp = () => {
     </div>
   );
 };
-/* min 20:00 */
+/* min 57:00 */
 export default CalenderApp;
