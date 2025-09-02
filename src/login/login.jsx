@@ -1,5 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase"; // husk å ha firebase.js klar
 import "./App.css";
 
 function Login() {
@@ -9,16 +11,20 @@ function Login() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    const userData = JSON.parse(localStorage.getItem(data.email));
-    if (userData) {
-      if (userData.password === data.password) {
-        console.log(userData.name + " You Are Successfully Logged In");
-      } else {
-        console.log("Email or Password is not matching with our record");
-      }
-    } else {
-      console.log("Email or Password is not matching with our record");
+  const onSubmit = async (data) => {
+    try {
+      // Logger inn bruker med Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+
+      console.log(
+        `${userCredential.user.displayName || "Bruker"} er logget inn`
+      );
+    } catch (err) {
+      console.error("Innlogging feilet:", err.message);
     }
   };
 
