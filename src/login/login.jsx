@@ -1,7 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase"; // husk å ha firebase.js klar
+import { auth } from "../firebase";
+import { useNavigate, Link } from "react-router-dom";
 import "./App.css";
 
 function Login() {
@@ -10,21 +11,15 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      // Logger inn bruker med Firebase Auth
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      console.log(
-        `${userCredential.user.displayName || "Bruker"} er logget inn`
-      );
-    } catch (err) {
-      console.error("Innlogging feilet:", err.message);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      navigate("/calendar"); // send bruker til kalender
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      alert("Feil e-post eller passord");
     }
   };
 
@@ -51,8 +46,16 @@ function Login() {
           <span style={{ color: "red" }}>*Password* is mandatory</span>
         )}
 
-        <input type="submit" style={{ backgroundColor: "#a1eafb" }} />
+        <input
+          type="submit"
+          value="Login"
+          style={{ backgroundColor: "#a1eafb" }}
+        />
       </form>
+
+      <p>
+        Har du ikke konto? <Link to="/register">Registrer deg her</Link>
+      </p>
     </>
   );
 }

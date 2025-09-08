@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 const CalenderApp = () => {
   const daysOfWeek = ["Søn", "Man", "Tis", "Ons", "Tor", "Fre", "Lør"];
@@ -87,41 +89,58 @@ const CalenderApp = () => {
       updatedEvents.push(newEvent);
     }
 
-    updatedEvents.sort((a,b) => new Date(a.date) - new Date(b.date))
+    updatedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     setEvents(updatedEvents);
     setEventTime({ hours: "00", minutes: "00" });
     setEventText("");
     setShowEventPopup(false);
-    setEditingEvent(null)
+    setEditingEvent(null);
   };
 
   const handleEditEvent = (event) => {
-    setSelectedDate(new Date(event.date))
+    setSelectedDate(new Date(event.date));
     setEventTime({
       hours: event.time.split(":")[0],
       minutes: event.time.split(":")[1],
     });
-    setEventText(event.text)
-    setEditingEvent(event)
-    setShowEventPopup(true)
-  }
+    setEventText(event.text);
+    setEditingEvent(event);
+    setShowEventPopup(true);
+  };
 
   const handleDeleteEvent = (eventId) => {
-    const updatedEvents = events.filter((event) => event.id !== eventId)
+    const updatedEvents = events.filter((event) => event.id !== eventId);
 
-    setEvents(updatedEvents)
-  }
+    setEvents(updatedEvents);
+  };
 
   const handleTimeChange = (e) => {
-    const{name,value} = e.target
-    setEventTime((prevTime) => ({...prevTime, [name]: value.padStart(2,'0')}))
-  }
+    const { name, value } = e.target;
+    setEventTime((prevTime) => ({
+      ...prevTime,
+      [name]: value.padStart(2, "0"),
+    }));
+  };
 
-
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+    }
+  };
 
   return (
     <div className="calender-app">
+      {/* Logg ut-knapp */}
+      <button
+        onClick={handleLogout}
+        style={{ marginBottom: "1rem", backgroundColor: "#f88" }}
+      >
+        Logg ut
+      </button>
+
       <div className="calender">
         <h1 className="heading">Calender</h1>
         <div className="navigate-date">
@@ -213,8 +232,14 @@ const CalenderApp = () => {
             </div>
             <div className="event-text">{event.text}</div>
             <div className="event-buttons">
-              <i className="bx bxs-edit-alt" onClick={()=>handleEditEvent(event)}></i>
-              <i className="bx bxs-message-x" onClick={() => handleDeleteEvent(event.id)}></i>
+              <i
+                className="bx bxs-edit-alt"
+                onClick={() => handleEditEvent(event)}
+              ></i>
+              <i
+                className="bx bxs-message-x"
+                onClick={() => handleDeleteEvent(event.id)}
+              ></i>
             </div>
           </div>
         ))}
@@ -222,5 +247,5 @@ const CalenderApp = () => {
     </div>
   );
 };
-/* min 2:17:00 */
+
 export default CalenderApp;
