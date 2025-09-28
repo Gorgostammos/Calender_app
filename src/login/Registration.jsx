@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase"; // husk å lage firebase.js som initierer Firebase
-import "./App.css";
+import "./loggin.css";
 
 function Register() {
   const {

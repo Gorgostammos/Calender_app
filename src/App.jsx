@@ -6,11 +6,10 @@ import {
   Navigate,
 } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from "./firebase"
 import Login from "./login/login";
 import Register from "./login/Registration";
 import CalenderApp from "./Components/CalenderApp";
-import "./Components/CalenderApp.css";
 
 function App() {
   const [user, setUser] = useState(null);

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom";
-import "./App.css";
+import "./loggin.css";
 
 function Login() {
   const {
@@ -24,7 +24,7 @@ function Login() {
   };
 
   return (
-    <>
+    <div className="logg">
       <h2>Login Form</h2>
 
       <form className="App" onSubmit={handleSubmit(onSubmit)}>
@@ -56,7 +56,7 @@ function Login() {
       <p>
         Har du ikke konto? <Link to="/register">Registrer deg her</Link>
       </p>
-    </>
+    </div>
   );
 }
 
