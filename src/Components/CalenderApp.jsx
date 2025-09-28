@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import "./CalenderApp.css";
 
 const CalenderApp = () => {
   const daysOfWeek = ["Søn", "Man", "Tis", "Ons", "Tor", "Fre", "Lør"];
@@ -87,140 +90,174 @@ const CalenderApp = () => {
       updatedEvents.push(newEvent);
     }
 
-    updatedEvents.sort((a,b) => new Date(a.date) - new Date(b.date))
+    updatedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     setEvents(updatedEvents);
     setEventTime({ hours: "00", minutes: "00" });
     setEventText("");
     setShowEventPopup(false);
-    setEditingEvent(null)
+    setEditingEvent(null);
   };
 
   const handleEditEvent = (event) => {
-    setSelectedDate(new Date(event.date))
+    setSelectedDate(new Date(event.date));
     setEventTime({
       hours: event.time.split(":")[0],
       minutes: event.time.split(":")[1],
     });
-    setEventText(event.text)
-    setEditingEvent(event)
-    setShowEventPopup(true)
-  }
+    setEventText(event.text);
+    setEditingEvent(event);
+    setShowEventPopup(true);
+  };
 
   const handleDeleteEvent = (eventId) => {
-    const updatedEvents = events.filter((event) => event.id !== eventId)
-
-    setEvents(updatedEvents)
-  }
+    const updatedEvents = events.filter((event) => event.id !== eventId);
+    setEvents(updatedEvents);
+  };
 
   const handleTimeChange = (e) => {
-    const{name,value} = e.target
-    setEventTime((prevTime) => ({...prevTime, [name]: value.padStart(2,'0')}))
-  }
+    const { name, value } = e.target;
+    setEventTime((prevTime) => ({
+      ...prevTime,
+      [name]: value.padStart(2, "0"),
+    }));
+  };
 
-
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("Bruker logget ut");
+    } catch (error) {
+      console.error("Feil ved utlogging:", error);
+    }
+  };
 
   return (
-    <div className="calender-app">
-      <div className="calender">
-        <h1 className="heading">Calender</h1>
-        <div className="navigate-date">
-          <h2 className="month">{monthsOfYear[currentMonth]}</h2>
-          <h2 className="year">{currentYear}</h2>
-          <div className="buttons">
-            <i className="bx bx-chevron-left" onClick={prevMonth}></i>
-            <i className="bx bx-chevron-right" onClick={nextMonth}></i>
-          </div>
-        </div>
-        <div className="weekdays">
-          {daysOfWeek.map((day) => (
-            <span key={day}>{day}</span>
-          ))}
-        </div>
-        <div className="days">
-          {[...Array(firstDayOfMonth).keys()].map((_, index) => (
-            <span key={`empty-${index}`} />
-          ))}
-          {[...Array(daysInMonth).keys()].map((day) => (
-            <span
-              key={day + 1}
-              className={
-                day + 1 === currentDate.getDate() &&
-                currentMonth === currentDate.getMonth() &&
-                currentYear === currentDate.getFullYear()
-                  ? "current-day"
-                  : ""
-              }
-              onClick={() => handleDayCilck(day + 1)}
-            >
-              {day + 1}
-            </span>
-          ))}
-        </div>
+    <div>
+      {/* Logg ut-knapp øverst */}
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}
+      >
+        <button
+          onClick={handleLogout}
+          style={{
+            backgroundColor: "#f88",
+            padding: "0.5rem 1rem",
+            borderRadius: "5px",
+          }}
+        >
+          Logg ut
+        </button>
       </div>
-      <div className="events">
-        {showEventPopup && (
-          <div className="event-popup">
-            <div className="time-input">
-              <div className="event-popup-time">Time</div>
-              <input
-                type="number"
-                name="hours"
-                min={0}
-                max={24}
-                className="hours"
-                value={eventTime.hours}
-                onChange={handleTimeChange}
-              />
-              <input
-                type="number"
-                name="minutes"
-                min={0}
-                max={60}
-                className="minutes"
-                value={eventTime.minutes}
-                onChange={handleTimeChange}
-              />
-            </div>
 
-            <textarea
-              placeholder="Enter Event text (Maks 60 characters)"
-              value={eventText}
-              onChange={(e) => {
-                if (e.target.value.length <= 60) {
-                  setEventText(e.target.value);
+      <div className="calender-app">
+        <div className="calender">
+          <h1 className="heading">Calender</h1>
+          <div className="navigate-date">
+            <h2 className="month">{monthsOfYear[currentMonth]}</h2>
+            <h2 className="year">{currentYear}</h2>
+            <div className="buttons">
+              <i className="bx bx-chevron-left" onClick={prevMonth}></i>
+              <i className="bx bx-chevron-right" onClick={nextMonth}></i>
+            </div>
+          </div>
+          <div className="weekdays">
+            {daysOfWeek.map((day) => (
+              <span key={day}>{day}</span>
+            ))}
+          </div>
+          <div className="days">
+            {[...Array(firstDayOfMonth).keys()].map((_, index) => (
+              <span key={`empty-${index}`} />
+            ))}
+            {[...Array(daysInMonth).keys()].map((day) => (
+              <span
+                key={day + 1}
+                className={
+                  day + 1 === currentDate.getDate() &&
+                  currentMonth === currentDate.getMonth() &&
+                  currentYear === currentDate.getFullYear()
+                    ? "current-day"
+                    : ""
                 }
-              }}
-            ></textarea>
-            <button className="event-popup-btn" onClick={handleEventSubmit}>
-              {editingEvent ? "Lagre Endring" : "Legge til"}
-            </button>
-            <button
-              className="close-event-popup"
-              onClick={() => setShowEventPopup(false)}
-            >
-              <i className="bx bx-x"></i>
-            </button>
+                onClick={() => handleDayCilck(day + 1)}
+              >
+                {day + 1}
+              </span>
+            ))}
           </div>
-        )}
-        {events.map((event, index) => (
-          <div className="event" key={index}>
-            <div className="event-date-wrapper">
-              <div className="event-date">{`${
-                monthsOfYear[event.date.getMonth()]
-              } ${event.date.getDate()}, ${event.date.getFullYear()} `}</div>
-              <div className="event-time">{event.time}</div>
+        </div>
+
+        <div className="events">
+          {showEventPopup && (
+            <div className="event-popup">
+              <div className="time-input">
+                <div className="event-popup-time">Time</div>
+                <input
+                  type="number"
+                  name="hours"
+                  min={0}
+                  max={24}
+                  className="hours"
+                  value={eventTime.hours}
+                  onChange={handleTimeChange}
+                />
+                <input
+                  type="number"
+                  name="minutes"
+                  min={0}
+                  max={60}
+                  className="minutes"
+                  value={eventTime.minutes}
+                  onChange={handleTimeChange}
+                />
+              </div>
+
+              <textarea
+                placeholder="Enter Event text (Maks 60 characters)"
+                value={eventText}
+                onChange={(e) => {
+                  if (e.target.value.length <= 60) {
+                    setEventText(e.target.value);
+                  }
+                }}
+              ></textarea>
+              <button className="event-popup-btn" onClick={handleEventSubmit}>
+                {editingEvent ? "Lagre Endring" : "Legge til"}
+              </button>
+              <button
+                className="close-event-popup"
+                onClick={() => setShowEventPopup(false)}
+              >
+                <i className="bx bx-x"></i>
+              </button>
             </div>
-            <div className="event-text">{event.text}</div>
-            <div className="event-buttons">
-              <i className="bx bxs-edit-alt" onClick={()=>handleEditEvent(event)}></i>
-              <i className="bx bxs-message-x" onClick={() => handleDeleteEvent(event.id)}></i>
+          )}
+          {events.map((event, index) => (
+            <div className="event" key={index}>
+              <div className="event-date-wrapper">
+                <div className="event-date">{`${
+                  monthsOfYear[event.date.getMonth()]
+                } ${event.date.getDate()}, ${event.date.getFullYear()} `}</div>
+                <div className="event-time">{event.time}</div>
+              </div>
+              <div className="event-text">{event.text}</div>
+              <div className="event-buttons">
+                <i
+                  className="bx bxs-edit-alt"
+                  onClick={() => handleEditEvent(event)}
+                ></i>
+                <i
+                  className="bx bxs-message-x"
+                  onClick={() => handleDeleteEvent(event.id)}
+                ></i>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 };
-/* min 2:17:00 */
+
 export default CalenderApp;
