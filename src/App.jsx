@@ -1,22 +1,15 @@
 import { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { supabase } from "./supabase"; // tilpass path
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { supabase } from "./supabase";
 import Login from "./login/login";
 import Register from "./login/Registration";
 import CalenderApp from "./Components/CalenderApp";
-
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Hent eksisterende session ved reload
     const initAuth = async () => {
       const {
         data: { session },
@@ -34,7 +27,6 @@ function App() {
 
     initAuth();
 
-    // Lytt på login/logout-endringer
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -46,12 +38,10 @@ function App() {
     };
   }, []);
 
-  if (loading) {
-    return null; // evt. en loader/spinner
-  }
+  if (loading) return null;
 
   return (
-    <Router>
+    <HashRouter>
       <Routes>
         {!user ? (
           <>
@@ -73,7 +63,7 @@ function App() {
           </>
         )}
       </Routes>
-    </Router>
+    </HashRouter>
   );
 }
 

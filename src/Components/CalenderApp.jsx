@@ -33,24 +33,7 @@ const CalenderApp = () => {
   const [eventText, setEventText] = useState("");
   const [editingEvent, setEditingEvent] = useState(null);
 
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        console.error("Feil ved utlogging:", error);
-        alert("Klarte ikke å logge ut");
-        return;
-      }
-
-      console.log("Bruker logget ut");
-      navigate("/login");
-    } catch (error) {
-      console.error("Uventet feil ved utlogging:", error);
-      alert("Noe gikk galt ved utlogging.");
-    }
-  };
-
+  // ========= KALENDER-BEREGNING (uendret) =========
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
@@ -143,10 +126,31 @@ const CalenderApp = () => {
     }));
   };
 
+  // ========= SUPABASE HER =========
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Feil ved utlogging:", error);
+        alert("Klarte ikke å logge ut");
+        return;
+      }
+
+      console.log("Bruker logget ut");
+      navigate("/login");
+    } catch (error) {
+      console.error("Uventet feil ved utlogging:", error);
+      alert("Noe gikk galt ved utlogging.");
+    }
+  };
+
   return (
     <div>
+      {/* Logg ut-knapp øverst */}
       <div
-        style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}>
+        style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}
+      >
         <button
           onClick={handleLogout}
           style={{

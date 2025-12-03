@@ -1,6 +1,6 @@
 .calender-app {
-    width: 60%;
-    min-width: 90vmin;
+width: 75%;
+    min-width: 125vmin;
     aspect-ratio: 3 / 2;
     background-color: #1e242d;
     padding: 3rem;
@@ -11,6 +11,7 @@
     position: relative;
     transform-style: preserve-3d;
 }
+
 
 .calender-app::after {
     content: "";
@@ -109,16 +110,21 @@
     box-shadow: 0 0 1.5rem 1rem rgba(239, 144, 17, 0.3);
 }
 
+/* <<<<<< DENNE DELEN ER DEN TILPASSETTE / KORRIGERTE >>>>>> */
 .events {
     width: 60%;
     height: 100%;
     padding: 3rem 0;
     overflow-y: auto;
-}
-.events::-webkit-scrollbar {
-    display: none;
+    /* nødvendig for scroll + riktig layout */
 }
 
+.events::-webkit-scrollbar {
+    display: none;
+    /* skjuler scroll som før */
+}
+
+/* <<<<<< SLUTT PÅ TILPASNING >>>>>> */
 
 .event-popup {
     position: absolute;
@@ -154,7 +160,6 @@
     letter-spacing: 0.1rem;
 }
 
-
 .time-input input {
     background-color: transparent;
     border: none;
@@ -181,7 +186,6 @@
     padding: 1rem;
     border-radius: 0.5rem;
     color: #78879e;
-    transform: border 0.5s;
 }
 
 .event-popup textarea:focus {
@@ -217,13 +221,13 @@
 .close-event-popup {
     position: absolute;
     top: 1rem;
-    right:1rem;
-    background-color:transparent;
+    right: 1rem;
+    background-color: transparent;
     border: none;
     cursor: pointer;
 }
 
-.close-event-popup i{
+.close-event-popup i {
     font-size: 2.5rem;
     color: #fff;
 }
