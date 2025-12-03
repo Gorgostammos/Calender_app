@@ -1,15 +1,40 @@
 .logg {
-    display: grid;
-    padding: 70px;
-    justify-content: center;
-
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* midt vertikalt */
+    align-items: center;        /* midt horisontalt */
+    min-height: 100vh;          /* fyll hele skjermen */
 }
+
+.loggin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Optional: gjør selve formen mer kontrollert */
+.App {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
 
 h2 {
     text-align: center;
+    margin: 20px;
+    font-size: large;
 }
 
 input {
     padding: 10px;
     font-size: 16px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+}
+
+
+p {
+    font-size: large;
+    margin-top: 20px;
 }
