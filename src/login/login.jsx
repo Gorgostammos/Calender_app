@@ -26,6 +26,7 @@ function Login() {
   return (
     <div className="logg">
       <h2>Login Form</h2>
+      <div className="loggin">
 
       <form className="App" onSubmit={handleSubmit(onSubmit)}>
         <input
@@ -56,6 +57,7 @@ function Login() {
       <p>
         Har du ikke konto? <Link to="/register">Registrer deg her</Link>
       </p>
+    </div>
     </div>
   );
 }
