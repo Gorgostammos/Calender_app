@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase";
 import "./CalenderApp.css";
 
 const CalenderApp = () => {
+  const navigate = useNavigate();
+
   const daysOfWeek = ["Søn", "Man", "Tis", "Ons", "Tor", "Fre", "Lør"];
   const monthsOfYear = [
     "Januar",
@@ -31,6 +33,24 @@ const CalenderApp = () => {
   const [eventText, setEventText] = useState("");
   const [editingEvent, setEditingEvent] = useState(null);
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Feil ved utlogging:", error);
+        alert("Klarte ikke å logge ut");
+        return;
+      }
+
+      console.log("Bruker logget ut");
+      navigate("/login");
+    } catch (error) {
+      console.error("Uventet feil ved utlogging:", error);
+      alert("Noe gikk galt ved utlogging.");
+    }
+  };
+
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
@@ -48,6 +68,14 @@ const CalenderApp = () => {
     );
   };
 
+  const isSameDay = (date1, date2) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
+
   const handleDayCilck = (day) => {
     const clickedDate = new Date(currentYear, currentMonth, day);
     const today = new Date();
@@ -59,14 +87,6 @@ const CalenderApp = () => {
       setEventText("");
       setEditingEvent(null);
     }
-  };
-
-  const isSameDay = (date1, date2) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
   };
 
   const handleEventSubmit = () => {
@@ -123,21 +143,10 @@ const CalenderApp = () => {
     }));
   };
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      console.log("Bruker logget ut");
-    } catch (error) {
-      console.error("Feil ved utlogging:", error);
-    }
-  };
-
   return (
     <div>
-      {/* Logg ut-knapp øverst */}
       <div
-        style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}
-      >
+        style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}>
         <button
           onClick={handleLogout}
           style={{

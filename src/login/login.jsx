@@ -1,8 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../supabase";
 import "./loggin.css";
 
 function Login() {
@@ -15,11 +14,22 @@ function Login() {
 
   const onSubmit = async (data) => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      navigate("/calendar"); // send bruker til kalender
-    } catch (error) {
-      console.error("Login failed:", error.message);
-      alert("Feil e-post eller passord");
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        console.error("Supabase login error:", error);
+        alert(error.message); // vis faktisk feilmelding
+        return;
+      }
+
+      console.log("Innlogget:", authData);
+      navigate("/calendar");
+    } catch (err) {
+      console.error("Uventet feil ved innlogging:", err);
+      alert("Noe gikk galt. Prøv igjen.");
     }
   };
 

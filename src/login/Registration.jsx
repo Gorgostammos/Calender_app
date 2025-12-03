@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase"; // husk å lage firebase.js som initierer Firebase
+import { supabase } from "../supabase"; // tilpass path
 import "./loggin.css";
 
 function Register() {
@@ -13,21 +12,29 @@ function Register() {
 
   const onSubmit = async (data) => {
     try {
-      // Oppretter bruker i Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      // Oppdaterer profil med navn
-      await updateProfile(userCredential.user, {
-        displayName: data.name,
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          // lagre navn som user_metadata
+          data: {
+            name: data.name,
+          },
+        },
       });
 
+      if (error) {
+        console.error("Feil ved registrering:", error.message);
+        alert(error.message);
+        return;
+      }
+
       console.log(`${data.name} er registrert med e-post: ${data.email}`);
+      // Hvis du vil: redirect til login eller calendar her
+      // navigate("/login")
     } catch (err) {
-      console.error("Feil ved registrering:", err.message);
+      console.error("Uventet feil ved registrering:", err);
+      alert("Noe gikk galt ved registrering. Prøv igjen.");
     }
   };
 
