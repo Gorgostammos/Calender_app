@@ -5,19 +5,49 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase"
+import { supabase } from "./supabase"; // tilpass path
 import Login from "./login/login";
 import Register from "./login/Registration";
 import CalenderApp from "./Components/CalenderApp";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsubscribe();
+    // Hent eksisterende session ved reload
+    const initAuth = async () => {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("Feil ved henting av session:", error.message);
+        setUser(null);
+      } else {
+        setUser(session?.user ?? null);
+      }
+      setLoading(false);
+    };
+
+    initAuth();
+
+    // Lytt på login/logout-endringer
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
+
+  if (loading) {
+    return null; // evt. en loader/spinner
+  }
 
   return (
     <Router>
