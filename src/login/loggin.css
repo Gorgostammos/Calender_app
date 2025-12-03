@@ -38,3 +38,9 @@ p {
     font-size: large;
     margin-top: 20px;
 }
+
+span{
+    font-size: 12px;
+    align-self: anchor-center;
+    margin-bottom: 5px;
+}
