@@ -30,6 +30,10 @@ width: 75%;
     width: 40%;
 }
 
+.MuiPickersInputBase-root.MuiPickersOutlinedInput-root.MuiPickersInputBase-colorPrimary.MuiPickersInputBase-adornedEnd.css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root ,svg.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.css-1umw9bq-MuiSvgIcon-root{
+    color: white;
+}
+
 .heading {
     font-family: "Bebas Neue", sans-serif;
     font-size: clamp(4rem, 3.8cqi, 7rem);

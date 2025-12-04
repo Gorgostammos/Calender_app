@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 import "./CalenderApp.css";
 
+// MUI time picker imports
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
+
 const CalenderApp = () => {
   const navigate = useNavigate();
 
@@ -118,6 +124,7 @@ const CalenderApp = () => {
     setEvents(updatedEvents);
   };
 
+  // Denne brukes ikke lenger etter MUI TimePicker, men lar den stå urørt
   const handleTimeChange = (e) => {
     const { name, value } = e.target;
     setEventTime((prevTime) => ({
@@ -204,27 +211,25 @@ const CalenderApp = () => {
         <div className="events">
           {showEventPopup && (
             <div className="event-popup">
-              <div className="time-input">
-                <div className="event-popup-time">Time</div>
-                <input
-                  type="number"
-                  name="hours"
-                  min={0}
-                  max={24}
-                  className="hours"
-                  value={eventTime.hours}
-                  onChange={handleTimeChange}
+              {/* MUI TimePicker erstatter de gamle time/minutt-inputene */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="Velg tid"
+                  ampm={false}                // Slår av AM/PM
+                  format="HH:mm"   
+                  value={dayjs()
+                    .hour(Number(eventTime.hours))
+                    .minute(Number(eventTime.minutes))}
+                  onChange={(newValue) => {
+                    if (newValue) {
+                      setEventTime({
+                        hours: newValue.hour().toString().padStart(2, "0"),
+                        minutes: newValue.minute().toString().padStart(2, "0"),
+                      });
+                    }
+                  }}
                 />
-                <input
-                  type="number"
-                  name="minutes"
-                  min={0}
-                  max={60}
-                  className="minutes"
-                  value={eventTime.minutes}
-                  onChange={handleTimeChange}
-                />
-              </div>
+              </LocalizationProvider>
 
               <textarea
                 placeholder="Enter Event text (Maks 60 characters)"
